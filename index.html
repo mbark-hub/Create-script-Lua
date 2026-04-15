@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOKA HUB | Script Maker</title>
+    <style>
+        /* إعدادات الألوان والتصميم العام */
+        body {
+            background-color: #0a192f; /* أزرق غامق جداً */
+            color: #e6f1ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px;
+            margin: 0;
+        }
+
+        /* تحريك العبارة فوق وتحت */
+        .animated-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #64ffda; /* لون مميز للعبارة */
+            animation: moveUpDown 2s ease-in-out infinite;
+        }
+
+        @keyframes moveUpDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* تنسيق منطقة الكتابة */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            background-color: #112240;
+            border: 2px solid #233554;
+            border-radius: 10px;
+            color: #ccd6f6;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #233554;
+            background-color: #112240;
+            color: white;
+            font-size: 18px;
+        }
+
+        button {
+            padding: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* الصفحة الثانية (تظهر بعد الضغط على تم) */
+        #resultPage {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .script-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .raw-btn {
+            background-color: #444;
+            font-size: 14px;
+            padding: 5px 15px;
+        }
+
+        pre {
+            background-color: #112240;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border-left: 5px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mainPage" class="container">
+        <div class="animated-text">أساعدك في صناعة السكربت 💡</div>
+        
+        <textarea id="luaInput" placeholder="اكتب لغة Lua هنا... (يدعم أكثر من مليون كلمة)"></textarea>
+        
+        <input type="text" id="scriptName" placeholder="أدخل اسم السكربت هنا">
+        
+        <button onclick="showResult()">تم</button>
+    </div>
+
+    <div id="resultPage">
+        <div class="script-header">
+            <h2 id="displayTitle">اسم السكربت</h2>
+            <button class="raw-btn" onclick="toggleRaw()">Raw</button>
+        </div>
+        <pre id="displayCode"></pre>
+        <button onclick="location.reload()" style="background: transparent; border: 1px solid #64ffda; color: #64ffda; margin-top: 20px;">إنشاء سكربت جديد</button>
+    </div>
+
+    <script>
+        let isRaw = false;
+        const mainPage = document.getElementById('mainPage');
+        const resultPage = document.getElementById('resultPage');
+        const luaInput = document.getElementById('luaInput');
+        const scriptName = document.getElementById('scriptName');
+        const displayTitle = document.getElementById('displayTitle');
+        const displayCode = document.getElementById('displayCode');
+
+        function showResult() {
+            if (luaInput.value.trim() === "" || scriptName.value.trim() === "") {
+                alert("يرجى كتابة السكربت واسمه أولاً!");
+                return;
+            }
+
+            // تحديث البيانات في الصفحة الثانية
+            displayTitle.innerText = scriptName.value;
+            displayCode.innerText = luaInput.value;
+
+            // تحديث رابط الموقع (اختياري لمحاكاة الحفظ)
+            window.history.pushState({}, '', "?script=" + encodeURIComponent(scriptName.value));
+
+            // التنقل بين الصفحات
+            mainPage.style.display = 'none';
+            resultPage.style.display = 'block';
+        }
+
+        function toggleRaw() {
+            if (!isRaw) {
+                // تحويل إلى نمط Raw (نص خام فقط)
+                document.body.innerHTML = `<pre style="color: white; background: black; padding: 20px;">${displayCode.innerText}</pre>`;
+                isRaw = true;
+            }
+        }
+    </script>
+</body>
+</html>
